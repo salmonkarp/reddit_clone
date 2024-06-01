@@ -1,16 +1,15 @@
 .Sidebar {
-    width:15%;
-    height:calc(100vh - 80px);
+    width:18%;
+    min-height: calc(100vh - 80px);
     border-right:var(--subtle-line);
-    overflow-y: hidden;
     padding-left: 20px;
 }
 
 .SidebarTop {
-    margin-top: 20px;
+    padding-top: 20px;
 }
 
-.SidebarTopItem {
+.SidebarTopItem:not(:first-child) {
     margin-top: 20px;
 }
 
@@ -37,7 +36,8 @@
 }
 
 .SidebarCommunitiesItem img{
-    width:30px;
+    width:40px;
+    border-radius: 20px;
 }
 
 .SidebarCommunitiesItem div{

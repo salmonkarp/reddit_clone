@@ -1,0 +1,24 @@
+:root {
+    --plain-black: #0e1113;
+    --subtle-line: solid 1px rgb(48, 48, 48);
+    --reddit-orange: #ff4500;
+  }
+  
+  * {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+  }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+  
+  body {
+    background-color: var(--plain-black);
+    color: white;
+    height: 100vh;
+  }

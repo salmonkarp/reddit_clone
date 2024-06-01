@@ -22,4 +22,34 @@
 .LoginState {
     position: absolute;
     right:20px;
+    display: flex;
+    flex-direction: row;
+    height:40px;
+    align-items: center;
+    gap: 10px;
+}
+
+.LoginState img {
+    height: 100%;
+    border-radius: 30px;
+    background-color: white;
+}
+
+.LoginState button {
+    border:none;
+    outline:none;
+    background:none;
+    color:white;
+    border: var(--subtle-line);
+    background-color: var(--reddit-orange);
+    border-radius:30px;
+    font-size: 14px;
+    font-weight: 700;
+    width:70px;
+    height:30px;
+    cursor: pointer;
+}
+
+.LoginState button:hover {
+    scale:0.9;
 }
