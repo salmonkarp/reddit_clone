@@ -1,0 +1,16 @@
+.Header {
+    width: 100%;
+    height: 75px;
+    border-bottom: var(--subtle-line);
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap:10px;
+}
+
+.fa-reddit {
+    margin-left:20px;
+    margin-right:5px;
+}
+

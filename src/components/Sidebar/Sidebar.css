@@ -1,0 +1,45 @@
+.Sidebar {
+    width:15%;
+    height:calc(100vh - 80px);
+    border-right:var(--subtle-line);
+    overflow-y: hidden;
+    padding-left: 20px;
+}
+
+.SidebarTop {
+    margin-top: 20px;
+}
+
+.SidebarTopItem {
+    margin-top: 20px;
+}
+
+.SidebarTopItem i {
+    width:40px;
+}
+
+.SidebarCommunities {
+    margin-top: 30px;
+}
+
+.SidebarCommunities h2 {
+    margin-bottom: 10px;
+}
+
+.SidebarCommunitiesItem {
+    width:100%;
+    height:60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap:10px;
+}
+
+.SidebarCommunitiesItem img{
+    width:30px;
+}
+
+.SidebarCommunitiesItem div{
+    margin-left: 5px;
+}

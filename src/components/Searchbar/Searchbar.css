@@ -1,0 +1,26 @@
+.Searchbar {
+    position: absolute;
+    left: calc(50% - 250px);
+}
+
+.SearchInput {
+    border: var(--subtle-line);
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: #2a3236;
+    padding-block: 12px;
+    padding-inline: 24px;
+    border-radius: 30px;
+    width: 500px;
+    height:20px;
+    font-size: 16px;
+    color: white;
+}
+
+.SearchInput:focus {
+    border:none;
+    outline:none;
+}
+

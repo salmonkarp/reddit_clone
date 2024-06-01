@@ -1,0 +1,25 @@
+.LoginButton {
+    position: absolute;
+    right:20px;
+    border:none;
+    outline:none;
+    background:none;
+    color:white;
+    border: var(--subtle-line);
+    background-color: var(--reddit-orange);
+    border-radius:30px;
+    font-size: 20px;
+    font-weight: 700;
+    width:110px;
+    height:45px;
+    cursor: pointer;
+}
+
+.LoginButton:hover {
+    scale: 0.9;
+}
+
+.LoginState {
+    position: absolute;
+    right:20px;
+}

@@ -1,38 +1,24 @@
-.App {
-  text-align: center;
+:root {
+  --plain-black: #0e1113;
+  --subtle-line: solid 1px rgb(48, 48, 48);
+  --reddit-orange: #ff4500;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* {
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+body {
+  background-color: var(--plain-black);
   color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  height: 100vh;
 }
