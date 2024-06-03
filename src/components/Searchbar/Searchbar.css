@@ -1,6 +1,16 @@
-.Searchbar {
+/* .Searchbar {
     position: absolute;
     left: calc(50% - 250px);
+    @media (max-width: 1100px) {
+        left: calc(50% - 150px)
+    }
+} */
+
+.Searchbar {
+    flex-grow: 1;
+    @media (max-width: 480px) {
+        flex-grow: 0;
+    }
 }
 
 .SearchInput {
@@ -13,14 +23,36 @@
     padding-block: 12px;
     padding-inline: 24px;
     border-radius: 30px;
-    width: 500px;
+    width: calc(100% - 85px);
+    /* max-width: 500px; */
     height:20px;
     font-size: 16px;
     color: white;
+    padding-left: 60px;
+    overflow-x: auto;
+    @media (max-width: 480px) {
+        display: none;
+    }
+}
+
+.SearchIcon {
+    position: absolute;
+    fill: white;
+    height:25px;
+    margin-left: 20px;
+    margin-top: 10px;
+    z-index: 1;
+    @media (max-width: 480px) {
+        display: none;
+    }
 }
 
 .SearchInput:focus {
     border:none;
     outline:none;
 }
+
+
+
+
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Searchbar.css";
+import SearchIcon from "./search-svgrepo-com.svg";
 
 function Searchbar() {
   const [searchInput, setSearchInput] = useState("");
@@ -10,6 +11,7 @@ function Searchbar() {
 
   return (
     <div className="Searchbar">
+      <img src={SearchIcon} alt="Search" className="SearchIcon" />
       <input
         type="text"
         placeholder="Search Reddit"

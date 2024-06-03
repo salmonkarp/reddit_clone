@@ -4,6 +4,7 @@ import "./Reddit.css";
 import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
 import { setAccessToken, setUserData, setUserFavSubs } from "../../store/store";
+import "./DisplayScript";
 
 // API Parameters // TODO: HIDE THIS
 const REDDIT_CLIENT_ID = "AIxtzVv0waDI7LRFl1yJlA";
@@ -14,7 +15,7 @@ function Reddit() {
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth.accessToken);
   const userData = useSelector((state) => state.auth.userData);
-  console.log(accessToken);
+  // console.log(accessToken);
 
   // get the access token and store it is a prop
   async function getToken() {
@@ -54,7 +55,7 @@ function Reddit() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
-    console.log(code);
+    // console.log(code);
     if (code) {
       getToken();
     }
@@ -75,7 +76,7 @@ function Reddit() {
         options
       );
       const data = await response.json();
-      console.log("data", data);
+      // console.log("data", data);
       dispatch(setUserData(data));
     }
     // if access token exist run the function
@@ -103,7 +104,7 @@ function Reddit() {
       subbedList = subbedList.sort((a, b) =>
         a.data.display_name.localeCompare(b.data.display_name)
       );
-      console.log(subbedList);
+      // console.log(subbedList);
 
       dispatch(setUserFavSubs(subbedList));
     }
