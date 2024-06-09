@@ -2,6 +2,7 @@ window.addEventListener("load", () => {
   refresh();
   handleSearchFocus();
   handleSidebar();
+  handleActiveElements();
 });
 
 window.addEventListener("resize", () => {
@@ -56,7 +57,7 @@ const handleSearchFocus = () => {
       headerLeft.style.opacity = 0;
       headerRight.style.opacity = 0;
 
-      console.log(innerWidth);
+      // console.log(innerWidth);
       if (innerWidth > 768) {
         searchBar.style.transform = "translateX(-205px)";
         searchInput.style.width = "85vw";
@@ -71,7 +72,7 @@ const handleSearchFocus = () => {
   });
   searchInput.addEventListener("blur", (event) => {
     if (window.innerWidth < 992) {
-      console.log("test");
+      // console.log("test");
       headerLeft.style.display = "flex";
       headerRight.style.display = "flex";
       searchBar.style.transform = "translateX(0px)";
@@ -87,5 +88,23 @@ const handleSearchFocus = () => {
 const handleSidebar = () => {
   if (window.innerWidth < 600) {
     document.querySelector(".Sidebar").style.display = "none";
+  } else if (window.innerWidth < 992) {
+    let topItems = document.querySelectorAll(".SidebarTopItem");
+    topItems.forEach((item) => {
+      item.innerHTML = item.innerHTML.split("</i>")[0];
+    });
+  }
+};
+
+const handleActiveElements = () => {
+  console.log(window.location.pathname);
+  if (window.location.pathname === "/") {
+    document.querySelector(".SidebarTopItem.Home").classList.add("active");
+  }
+  if (window.location.pathname === "/popular") {
+    document.querySelector(".SidebarTopItem.Popular").classList.add("active");
+  }
+  if (window.location.pathname === "/all") {
+    document.querySelector(".SidebarTopItem.All").classList.add("active");
   }
 };

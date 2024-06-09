@@ -2,6 +2,8 @@
   --plain-black: #0e1113;
   --subtle-line: solid 1px rgb(48, 48, 48);
   --reddit-orange: #ff4500;
+  --hover-gray: #24292c;
+  --lighter-gray: #444a4e;
 }
 
 * {
@@ -22,3 +24,4 @@ body {
   color: white;
   height: 100vh;
 }
+

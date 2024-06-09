@@ -5,6 +5,8 @@ import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
 import { setAccessToken, setUserData, setUserFavSubs } from "../../store/store";
 import "./DisplayScript";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Feed from "../Feed/Feed";
 
 // API Parameters // TODO: HIDE THIS
 const REDDIT_CLIENT_ID = "AIxtzVv0waDI7LRFl1yJlA";
@@ -15,9 +17,8 @@ function Reddit() {
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth.accessToken);
   const userData = useSelector((state) => state.auth.userData);
-  // console.log(accessToken);
 
-  // get the access token and store it is a prop
+  // get the access token and store it is a prop so entire thing updates when access token changes
   async function getToken() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
@@ -86,33 +87,6 @@ function Reddit() {
   }, [dispatch, accessToken]);
 
   // get subscribed subreddits data
-  useEffect(() => {
-    async function getUserData() {
-      const options = {
-        method: "GET",
-        headers: {
-          "User-Agent": "Reddit_App",
-          Authorization: `bearer ${accessToken}`,
-        },
-      };
-      const response = await fetch(
-        "https://oauth.reddit.com/subreddits/mine/subscriber",
-        options
-      );
-      const data = await response.json();
-      let subbedList = data.data.children;
-      subbedList = subbedList.sort((a, b) =>
-        a.data.display_name.localeCompare(b.data.display_name)
-      );
-      // console.log(subbedList);
-
-      dispatch(setUserFavSubs(subbedList));
-    }
-    // if access token exist run the function
-    if (accessToken) {
-      getUserData();
-    }
-  }, [dispatch, accessToken]);
 
   return (
     <div className="Reddit">
@@ -124,8 +98,15 @@ function Reddit() {
         referrerPolicy="no-referrer"
       />
       <Header authorize={authorize} userData={userData}></Header>
-      <Sidebar></Sidebar>
-      {/* <h3>{accessToken}</h3> */}
+      <div className="BottomContainer">
+        <Sidebar />
+        <Router>
+          <Routes>
+            <Route index element={<Feed />} />
+            <Route path="/popular" element={<Feed />} />
+          </Routes>
+        </Router>
+      </div>
     </div>
   );
 }

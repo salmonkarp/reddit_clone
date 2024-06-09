@@ -2,6 +2,8 @@
     --plain-black: #0e1113;
     --subtle-line: solid 1px rgb(48, 48, 48);
     --reddit-orange: #ff4500;
+    --hover-gray: #24292c;
+    --lighter-gray: #3e4447;
   }
   
   * {
@@ -22,5 +24,27 @@
     background-color: var(--plain-black);
     color: white;
     height: 100vh;
+    overflow-y: hidden;
   }
 
+  .BottomContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 90vh;
+  }
+
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+::-webkit-scrollbar-track {
+    background-color: var(--plain-black);
+    border-radius: 100px;
+  }
+  
+::-webkit-scrollbar-thumb {
+    background-color: var(--hover-gray);
+    border-radius: 100px;
+  }

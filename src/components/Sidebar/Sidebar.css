@@ -1,24 +1,59 @@
+* {
+    text-decoration: none;
+    color:white;
+}
+
+
+
 .Sidebar {
-    width:18%;
+    width:16%;
     min-height: calc(100vh - 80px);
     border-right:var(--subtle-line);
-    padding-left: 20px;
+    padding-left: 10px;
+    padding-right: 30px;
+    overflow: scroll;
+    overflow-x: hidden;
+    @media (max-width:992px) {
+        padding-right: 10px;
+        width:min-content;
+    }
 }
 
 .SidebarTop {
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
-.SidebarTopItem:not(:first-child) {
-    margin-top: 20px;
+
+.SidebarTopItem {
+    cursor: pointer;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    padding-left: 10px;
+    border: none;
+    border-radius: 15px;
 }
 
+.SidebarTopItem.active {
+    background: var(--hover-gray);
+}
+
+.SidebarTopItem:hover {
+    background-color: var(--hover-gray);
+}
 .SidebarTopItem i {
     width:40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
 }
 
 .SidebarCommunities {
-    margin-top: 30px;
+    margin-top: 15px;
     @media (max-width: 992px) {
         display: flex;
         flex-direction: row;
@@ -27,8 +62,9 @@
 }
 
 .SidebarCommunities h2 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-size: 1.3rem;
+    margin-left: 10px;
     @media (max-width: 992px) {
         display: none;
     }
@@ -42,9 +78,16 @@
     justify-content: start;
     align-items: center;
     gap:10px;
+    padding-left: 10px;
+    border:none;
+    border-radius: 10px;
     @media (max-width: 992px) {
         width: 50px;
     }
+}
+
+.SidebarCommunitiesItem:hover {
+    background-color: var(--reddit-gray);
 }
 
 .SidebarCommunitiesItem img{
