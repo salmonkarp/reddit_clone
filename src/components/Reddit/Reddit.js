@@ -4,6 +4,7 @@ import "./Reddit.css";
 import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
 import MobileSidebar from "../MobileSidebar/MobileSidebar";
+import SubredditFeed from "../SubredditFeed/SubredditFeed";
 import { setAccessToken, setUserData, setUserFavSubs } from "../../store/store";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Feed from "../Feed/Feed";
@@ -64,7 +65,7 @@ function Reddit() {
 
   const toggleMobileSidebar = () => {
     let mobileSidebar = document.querySelector(".MobileSidebar");
-    console.log(mobileSidebar.style.left);
+    // console.log(mobileSidebar.style.left);
     if (mobileSidebar.style.left != "0px") {
       mobileSidebar.style.left = 0;
     } else mobileSidebar.style.left = "-100%";
@@ -94,6 +95,7 @@ function Reddit() {
             <Route index element={<Feed type="home" />} />
             <Route path="/popular" element={<Feed type="popular" />} />
             <Route path="/all" element={<Feed type="all" />} />
+            <Route path="/r/:subreddit" element={<SubredditFeed />} />
           </Routes>
         </div>
       </Router>

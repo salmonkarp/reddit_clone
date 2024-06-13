@@ -1,0 +1,70 @@
+.SubredditFeed {
+    width: 80%;
+    padding-left: 20px;
+    padding-top: 20px;
+    overflow: scroll;
+    overflow-x: hidden;
+    @media (max-width: 992px) {
+        width: 90%;
+    }
+    @media (max-width: 600px) {
+        width: 100%;
+    }
+}
+
+.SubredditFeedTop {
+    height: 200px;
+    width: calc(100% - 10px);
+    /* border-radius: 10px; */
+    /* outline: solid 2px red; */
+}
+
+.SubredditBanner {
+    height: 80%;
+    background-position: center;
+    background-size: contain;
+    border-radius: 10px;
+}
+
+.SubredditFeedTopDetails {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding-right: 10px;
+}
+
+.SubredditIcon {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    outline: solid 5px var(--plain-black);
+    position: relative;
+    top: -50px;
+    left: 20px;
+}
+
+.SubredditName {
+    margin-left: 25px;
+    font-size: 1.8rem;
+    margin-top: 10px;
+}
+
+.SubredditFeedTopDetails button {
+    height: 40px;
+    margin-top: 20px;
+    border:none;
+    outline:solid 1px white;
+    border-radius: 20px;
+    padding-inline: 15px;
+    background: none;
+    cursor: pointer;
+}
+
+.SubredditFeedTopDetails button:hover {
+    background-color: white;
+    color: var(--plain-black);
+}
+
+.CreatePostButton {
+    margin-left: auto;
+}
