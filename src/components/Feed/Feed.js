@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
-import "./Feed.css";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { decode } from "html-entities";
-import { useRef } from "react";
-import { useCallback } from "react";
+import "./Feed.css";
 
-function Feed() {
+function Feed({ type }) {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [feedContent, setFeedContent] = useState([]);
   const [after, setAfter] = useState(null);
@@ -19,7 +17,6 @@ function Feed() {
       console.log("still loading");
       return;
     }
-    // console.log("getting feed ", feedContent, key, afterParam);
     loadingRef.current = true;
     let options;
     if (key === "default") {
@@ -38,7 +35,16 @@ function Feed() {
         },
       };
     }
-    let url = "https://oauth.reddit.com/.json";
+
+    let url;
+    if (type == "home") {
+      url = "https://oauth.reddit.com/.json";
+    } else if (type == "popular") {
+      url = "https://oauth.reddit.com/r/popular.json";
+    } else {
+      url = "https://oauth.reddit.com/r/all.json";
+    }
+
     if (afterParam) {
       url += `?after=${afterParam}`;
     }
@@ -46,13 +52,36 @@ function Feed() {
       const response = await fetch(url, options);
       const data = await response.json();
 
+      let previousFeed = feedContent;
+      // console.log(previousFeed);
+      let startFeedFromScratch = false;
+      // console.log(previousFeed);
+      if (previousFeed) {
+        if (!previousFeed.isToken || previousFeed.feedType != type) {
+          startFeedFromScratch = true;
+        }
+      }
+      // console.log(startFeedFromScratch);
+      let fetchResult = data.data.children;
       if (key === "default") {
-        setFeedContent(data.data.children);
-        setAfter(data.data.after);
+        fetchResult.forEach((obj) => {
+          obj.isToken = false;
+          obj.feedType = type;
+        });
       } else {
-        setFeedContent(feedContent.concat(data.data.children));
+        fetchResult.forEach((obj) => {
+          obj.isToken = true;
+          obj.feedType = type;
+        });
+      }
+
+      if (startFeedFromScratch) {
+        setFeedContent(fetchResult);
+      } else {
+        setFeedContent(feedContent.concat(fetchResult));
         setAfter(data.data.after);
       }
+      setAfter(data.data.after);
     } catch (error) {
       console.error("Failed to fetch feed content:", error);
     } finally {
@@ -78,7 +107,7 @@ function Feed() {
     } else {
       getFeedContent("default");
     }
-  }, [accessToken]);
+  }, [accessToken, type]);
 
   // event-listener-esque function to check if element is at end of scroll
   const handleScroll = useCallback(() => {
@@ -128,16 +157,13 @@ function Feed() {
     let thumbnail;
     const thumbnailUrl =
       postData.thumbnail !== "image" ? postData.thumbnail : postData.url;
-    if (postData.secure_media) {
+    console.log(post);
+    if (postData.secure_media && postData.secure_media.reddit_video) {
       thumbnail = (
         <video
-          src={postData.secure_media.reddit_video.scrubber_media_url}
+          src={postData.secure_media.reddit_video.fallback_url}
           controls
           className="FeedThumbnail"
-          // onClick={(e) => {
-          //   e.preventDefault();
-          //   window.location.href = postData.url_overridden_by_dest;
-          // }}
         />
       );
     } else if (
@@ -146,17 +172,7 @@ function Feed() {
       postData.thumbnail !== "nsfw" &&
       postData.thumbnail !== "spoiler"
     ) {
-      thumbnail = (
-        <img
-          src={thumbnailUrl}
-          alt=""
-          className="FeedThumbnail"
-          // onClick={(e) => {
-          //   e.preventDefault();
-          //   window.location.href = postData.url_overridden_by_dest;
-          // }}
-        />
-      );
+      thumbnail = <img src={thumbnailUrl} alt="" className="FeedThumbnail" />;
     } else if (postData.thumbnail === "nsfw") {
       thumbnail = <div className="FeedThumbnail nsfw">NSFW</div>;
     } else if (postData.thumbnail === "spoiler") {
@@ -171,8 +187,15 @@ function Feed() {
 
     // console.log(feedContent);
     return (
-      <Link key={postData.id} className="FeedPost" to={`/${permalink}`}>
+      <Link
+        key={postData.id}
+        className="FeedPost"
+        to={`/${permalink}`}
+        feed_access_token={Boolean(accessToken).toString()}
+        feed_type={type}
+      >
         {thumbnail}
+
         <div className="FeedDetails">
           <h2 className="FeedTitle">
             {decode(

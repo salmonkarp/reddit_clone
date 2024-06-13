@@ -33,6 +33,7 @@
     gap: 10px;
     justify-content: start;
     align-items: center;
+    min-height: 30px;
 }
 
 .MobileTop > i {
@@ -44,21 +45,60 @@
 }
 
 .MobileSidebarContents > h2 {
+    margin-top: 20px;
+}
+
+.MobileSidebarCommunities {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 10px;
+    flex-wrap: wrap;
     margin-top: 10px;
 }
 
 .MobileSidebarCommunitiesItem {
     height: 30px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    margin-block: 15px;
+    width: 30px;
 }
 
 .MobileSidebarCommunitiesItem > img {
-    height: 100%;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
 }
 
 
+.MobileSearchInput {
+    margin-top: 10px;
+    border: var(--subtle-line);
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: #2a3236;
+    padding-block: 6px;
+    padding-inline: 12px;
+    border-radius: 10px;
+    width: calc(100% - 70px);
+    /* max-width: 500px; */
+    height:20px;
+    font-size: 12px;
+    color: white;
+    padding-left: 40px;
+    overflow-x: auto;
+}
+
+.MobileSearchIcon {
+    position: absolute;
+    fill: white;
+    height:15px;
+    margin-left: 15px;
+    margin-top: 19px;
+    z-index: 1;
+}
+
+.MobileSearchInput:focus {
+    border:none;
+    outline:none;
+}

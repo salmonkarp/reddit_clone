@@ -1,11 +1,18 @@
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import SearchIcon from "./search-svgrepo-com.svg";
 import "./MobileSidebar.css";
 
 function MobileSidebar({ toggleMobileSidebar }) {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [subreddits, setSubreddits] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const handleChange = (e) => {
+    e.preventDefault();
+    setSearchInput(e.target.value);
+  };
 
   // fetch user data if accessToken exists
   useEffect(() => {
@@ -48,29 +55,36 @@ function MobileSidebar({ toggleMobileSidebar }) {
       href={`/${subreddit.data.display_name}`}
     >
       <img
-        src={subreddit.data.community_icon.split("?")[0]}
+        src={
+          subreddit.data.community_icon.split("?")[0] || "subredditDefault.svg"
+        }
         alt={subreddit.data.display_name}
       />
-      <div value={subreddit.data.display_name}>
-        {subreddit.data.display_name}
-      </div>
     </a>
   ));
 
   return (
     <div className="MobileSidebar">
       <div className="MobileSidebarContents">
-        <div className="MobileTop">
+        <Link className="MobileTop" to={`/`}>
           <i className="fa-solid fa-house fa-xl"></i> Home
-        </div>
-        <div className="MobileTop">
+        </Link>
+        <Link className="MobileTop" to={`/popular`}>
           <i className="fa-solid fa-arrow-trend-up fa-xl"></i> Popular
-        </div>
-        <div className="MobileTop">
+        </Link>
+        <Link className="MobileTop" to={`/all`}>
           <i className="fa-solid fa-chart-simple fa-xl"></i> All
-        </div>
+        </Link>
+        <img src={SearchIcon} alt="Search" className="MobileSearchIcon" />
+        <input
+          type="text"
+          placeholder="Search Reddit"
+          onChange={handleChange}
+          value={searchInput}
+          className="MobileSearchInput"
+        />
         <h2>Communities</h2>
-        {items}
+        <div className="MobileSidebarCommunities">{items}</div>
       </div>
       <div
         className="MobileSidebarClickoff"

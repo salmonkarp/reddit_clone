@@ -83,18 +83,20 @@ function Reddit() {
         authorize={authorize}
         toggleMobileSidebar={toggleMobileSidebar}
       ></Header>
-      <div className="BottomContainer">
-        <Sidebar />
-        <MobileSidebar
-          toggleMobileSidebar={toggleMobileSidebar}
-        ></MobileSidebar>
-        <Router>
+      <Router>
+        <div className="BottomContainer">
+          <Sidebar />
+          <MobileSidebar
+            toggleMobileSidebar={toggleMobileSidebar}
+          ></MobileSidebar>
+
           <Routes>
-            <Route index element={<Feed />} />
-            <Route path="/popular" element={<Feed />} />
+            <Route index element={<Feed type="home" />} />
+            <Route path="/popular" element={<Feed type="popular" />} />
+            <Route path="/all" element={<Feed type="all" />} />
           </Routes>
-        </Router>
-      </div>
+        </div>
+      </Router>
     </div>
   );
 }

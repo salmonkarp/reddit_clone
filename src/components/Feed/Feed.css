@@ -100,7 +100,7 @@
     align-items: center;
     height: calc(100% - 20px);
     margin-right: 20px;
-    margin-top: 10px;
+    /* margin-block: 10px; */
     border-radius: 10px;
     padding-inline: 10px;
     background-color: var(--lighter-gray);

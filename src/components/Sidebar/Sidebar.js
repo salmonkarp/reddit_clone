@@ -1,12 +1,14 @@
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 
 function Sidebar() {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [subreddits, setSubreddits] = useState([]);
   const containerRef = useRef();
+  const location = useLocation();
 
   // display scripts
   const handleCommunityNames = () => {
@@ -51,14 +53,22 @@ function Sidebar() {
       document.querySelector(".Sidebar").style.display = "unset";
     }
   };
-  const handleActiveElements = () => {
-    if (window.location.pathname === "/") {
+  const handleActiveElements = (pathname) => {
+    if (typeof pathname !== "string") {
+      console.error("Invalid pathname:", pathname);
+      return;
+    }
+    document.querySelectorAll(".SidebarTopItem").forEach((item) => {
+      item.classList.remove("active");
+    });
+    console.log("path", pathname);
+    if (pathname === "/") {
       document.querySelector(".SidebarTopItem.Home").classList.add("active");
     }
-    if (window.location.pathname === "/popular") {
+    if (pathname === "/popular") {
       document.querySelector(".SidebarTopItem.Popular").classList.add("active");
     }
-    if (window.location.pathname === "/all") {
+    if (pathname === "/all") {
       document.querySelector(".SidebarTopItem.All").classList.add("active");
     }
   };
@@ -100,55 +110,61 @@ function Sidebar() {
   useEffect(() => {
     handleCommunityNames();
     handleSidebar();
-    handleActiveElements();
     window.addEventListener("resize", handleCommunityNames);
     window.addEventListener("resize", handleSidebar);
-    window.addEventListener("resize", handleActiveElements);
     return () => {
       window.removeEventListener("resize", handleCommunityNames);
       window.removeEventListener("resize", handleSidebar);
-      window.removeEventListener("resize", handleActiveElements);
     };
   });
 
+  useEffect(() => {
+    handleActiveElements(location.pathname);
+  }, [location]);
+
   // mapping for each subreddit item
   const items = subreddits.map((subreddit) => (
-    <a
+    <Link
       className="SidebarCommunitiesItem"
       key={subreddit.data.display_name}
-      href={`/${subreddit.data.display_name}`}
+      to={`/r/${subreddit.data.display_name}`}
     >
       <img
-        src={subreddit.data.community_icon.split("?")[0]}
+        src={
+          subreddit.data.community_icon.split("?")[0] || "subredditDefault.svg"
+        }
         alt={subreddit.data.display_name}
       />
       <div value={subreddit.data.display_name}>
         {subreddit.data.display_name}
       </div>
-    </a>
+    </Link>
   ));
 
   return (
     <div className="Sidebar" ref={containerRef}>
       <div className="SidebarTop">
-        <div
+        <Link
+          to={`/`}
           className="SidebarTopItem Home"
           value="<i className='fa-solid fa-house fa-xl'></i> Home"
         >
           <i className="fa-solid fa-house fa-xl"></i> Home
-        </div>
-        <div
+        </Link>
+        <Link
+          to={`/popular`}
           className="SidebarTopItem Popular"
           value="<i className='fa-solid fa-arrow-trend-up fa-xl'></i> Popular"
         >
           <i className="fa-solid fa-arrow-trend-up fa-xl"></i> Popular
-        </div>
-        <div
+        </Link>
+        <Link
+          to={`/all`}
           className="SidebarTopItem All"
           value='<i className="fa-solid fa-chart-simple fa-xl"></i> All'
         >
           <i className="fa-solid fa-chart-simple fa-xl"></i> All
-        </div>
+        </Link>
       </div>
       <div className="SidebarCommunities">
         <h2>Communities</h2>
