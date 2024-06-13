@@ -1,12 +1,69 @@
-import { useState } from "react";
-import "./Sidebar.css";
+import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { useEffect } from "react";
+import "./Sidebar.css";
 
 function Sidebar() {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [subreddits, setSubreddits] = useState([]);
+  const containerRef = useRef();
+
+  // display scripts
+  const handleCommunityNames = () => {
+    if (
+      window.innerWidth > 480 &&
+      containerRef.current.querySelectorAll(".SidebarCommunitiesItem").length >
+        1
+    ) {
+      let comWidth =
+        parseInt(
+          window.getComputedStyle(
+            containerRef.current.querySelector(".SidebarCommunitiesItem")
+          ).width
+        ) -
+        55 -
+        20;
+      let comNames = containerRef.current.querySelectorAll(
+        ".SidebarCommunitiesItem div"
+      );
+      comNames.forEach((com) => {
+        let tempWidth = parseInt(window.getComputedStyle(com).width);
+        com.innerHTML = String(com.attributes.value.value);
+        while (tempWidth > comWidth) {
+          com.innerHTML = com.innerHTML.slice(0, -1);
+          tempWidth = parseInt(window.getComputedStyle(com).width);
+          if (tempWidth <= comWidth) {
+            com.innerHTML = com.innerHTML + "...";
+          }
+        }
+      });
+    }
+  };
+  const handleSidebar = () => {
+    if (window.innerWidth < 480) {
+      document.querySelector(".Sidebar").style.display = "none";
+    } else if (window.innerWidth < 992) {
+      let topItems = document.querySelectorAll(".SidebarTopItem");
+      topItems.forEach((item) => {
+        item.innerHTML = item.innerHTML.split("</i>")[0];
+      });
+    } else {
+      document.querySelector(".Sidebar").style.display = "unset";
+    }
+  };
+  const handleActiveElements = () => {
+    if (window.location.pathname === "/") {
+      document.querySelector(".SidebarTopItem.Home").classList.add("active");
+    }
+    if (window.location.pathname === "/popular") {
+      document.querySelector(".SidebarTopItem.Popular").classList.add("active");
+    }
+    if (window.location.pathname === "/all") {
+      document.querySelector(".SidebarTopItem.All").classList.add("active");
+    }
+  };
+
+  // fetch user data if accessToken exists
   useEffect(() => {
     async function getUserData(key) {
       if (key === "default") {
@@ -38,6 +95,23 @@ function Sidebar() {
       setSubreddits([]);
     }
   }, [accessToken]);
+
+  // add event listeners
+  useEffect(() => {
+    handleCommunityNames();
+    handleSidebar();
+    handleActiveElements();
+    window.addEventListener("resize", handleCommunityNames);
+    window.addEventListener("resize", handleSidebar);
+    window.addEventListener("resize", handleActiveElements);
+    return () => {
+      window.removeEventListener("resize", handleCommunityNames);
+      window.removeEventListener("resize", handleSidebar);
+      window.removeEventListener("resize", handleActiveElements);
+    };
+  });
+
+  // mapping for each subreddit item
   const items = subreddits.map((subreddit) => (
     <a
       className="SidebarCommunitiesItem"
@@ -53,8 +127,9 @@ function Sidebar() {
       </div>
     </a>
   ));
+
   return (
-    <div className="Sidebar">
+    <div className="Sidebar" ref={containerRef}>
       <div className="SidebarTop">
         <div
           className="SidebarTopItem Home"

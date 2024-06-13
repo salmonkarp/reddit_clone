@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { logout } from "../../store/store";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import "./LoginState.css";
 
-function LoginState({ authorize }) {
+function LoginState({ authorize, toggleMobileSidebar }) {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [userData, setUserData] = useState({});
   const dispatch = useDispatch();
+  const loginRef = useRef();
 
   // if accessToken exists, fetch user data
 
@@ -44,9 +45,20 @@ function LoginState({ authorize }) {
   };
 
   const handleLogout = () => {
-    console.log("logging out");
     dispatch(logout());
   };
+
+  let mobileSidebar = <div></div>;
+  if (window.innerWidth < 480) {
+    mobileSidebar = (
+      <div>
+        <i
+          className="fa-xl fa-solid fa-bars"
+          onClick={() => toggleMobileSidebar()}
+        ></i>
+      </div>
+    );
+  }
 
   if (Object.keys(userData).length === 0 || !accessToken || userData == {}) {
     return (
@@ -60,12 +72,13 @@ function LoginState({ authorize }) {
     );
   }
   return (
-    <div className="LoginState">
+    <div className="LoginState" ref={loginRef}>
       <h5>{userData.name}</h5>
       <img src={userData.icon_img.split("?")[0]} alt={userData.name} />
       <button type="button" onClick={() => handleLogout()}>
         Logout
       </button>
+      {mobileSidebar}
     </div>
   );
 }

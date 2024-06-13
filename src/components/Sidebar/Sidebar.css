@@ -87,7 +87,7 @@
 }
 
 .SidebarCommunitiesItem:hover {
-    background-color: var(--reddit-gray);
+    background-color: var(--hover-gray);
 }
 
 .SidebarCommunitiesItem img{

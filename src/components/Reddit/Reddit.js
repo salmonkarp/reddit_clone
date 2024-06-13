@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./Reddit.css";
 import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
+import MobileSidebar from "../MobileSidebar/MobileSidebar";
 import { setAccessToken, setUserData, setUserFavSubs } from "../../store/store";
-import "./DisplayScript";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Feed from "../Feed/Feed";
 
 // API Parameters // TODO: HIDE THIS
-const REDDIT_CLIENT_ID = "AIxtzVv0waDI7LRFl1yJlA";
-const REDDIT_CLIENT_SECRET = "mDQhGZ7suHpM4NGotFMab5RomaUShQ";
-const REDDIT_REDIRECT_URI = "http://127.0.0.1:3000";
+const REDDIT_CLIENT_ID = process.env.REACT_APP_REDDIT_CLIENT_ID;
+const REDDIT_CLIENT_SECRET = process.env.REACT_APP_REDDIT_CLIENT_SECRET;
+const REDDIT_REDIRECT_URI = process.env.REACT_APP_REDDIT_REDIRECT_URI;
 
 function Reddit() {
   const dispatch = useDispatch();
-  const accessToken = useSelector((state) => state.auth.accessToken);
-  const userData = useSelector((state) => state.auth.userData);
+  const redditRef = useRef();
+  // const userData = useSelector((state) => state.auth.userData);
 
   // get the access token and store it is a prop so entire thing updates when access token changes
   async function getToken() {
@@ -62,34 +62,16 @@ function Reddit() {
     }
   }, []);
 
-  // get user data
-  useEffect(() => {
-    async function getUserData() {
-      const options = {
-        method: "GET",
-        headers: {
-          "User-Agent": "Reddit_App",
-          Authorization: `bearer ${accessToken}`,
-        },
-      };
-      const response = await fetch(
-        "https://oauth.reddit.com/api/v1/me.json",
-        options
-      );
-      const data = await response.json();
-      // console.log("data", data);
-      dispatch(setUserData(data));
-    }
-    // if access token exist run the function
-    if (accessToken) {
-      getUserData();
-    }
-  }, [dispatch, accessToken]);
-
-  // get subscribed subreddits data
+  const toggleMobileSidebar = () => {
+    let mobileSidebar = document.querySelector(".MobileSidebar");
+    console.log(mobileSidebar.style.left);
+    if (mobileSidebar.style.left != "0px") {
+      mobileSidebar.style.left = 0;
+    } else mobileSidebar.style.left = "-100%";
+  };
 
   return (
-    <div className="Reddit">
+    <div className="Reddit" ref={redditRef}>
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -97,9 +79,15 @@ function Reddit() {
         crossOrigin="anonymous"
         referrerPolicy="no-referrer"
       />
-      <Header authorize={authorize} userData={userData}></Header>
+      <Header
+        authorize={authorize}
+        toggleMobileSidebar={toggleMobileSidebar}
+      ></Header>
       <div className="BottomContainer">
         <Sidebar />
+        <MobileSidebar
+          toggleMobileSidebar={toggleMobileSidebar}
+        ></MobileSidebar>
         <Router>
           <Routes>
             <Route index element={<Feed />} />

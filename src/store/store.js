@@ -23,8 +23,9 @@ const saveState = (state) => {
 
 const initialState = {
   accessToken: null,
-  userData: {},
-  userFavSubs: [],
+  // userData: {},
+  // userFavSubs: [],
+  // isWaitingToken: false,
 };
 
 const authSlice = createSlice({
@@ -34,12 +35,15 @@ const authSlice = createSlice({
     setAccessToken: (state, action) => {
       state.accessToken = action.payload;
     },
-    setUserData: (state, action) => {
-      state.userData = action.payload;
-    },
-    setUserFavSubs: (state, action) => {
-      state.userFavSubs = action.payload;
-    },
+    // setUserData: (state, action) => {
+    //   state.userData = action.payload;
+    // },
+    // setUserFavSubs: (state, action) => {
+    //   state.userFavSubs = action.payload;
+    // },
+    // setIsWaitingToken: (state, action) => {
+    //   state.isWaitingToken = action.payload;
+    // },
     logout: (state) => {
       state.accessToken = null;
       state.userData = {};
@@ -48,8 +52,13 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAccessToken, setUserData, setUserFavSubs, logout } =
-  authSlice.actions;
+export const {
+  setAccessToken,
+  // setUserData,
+  // setUserFavSubs,
+  // setIsWaitingToken,
+  logout,
+} = authSlice.actions;
 
 const store = configureStore({
   reducer: {
