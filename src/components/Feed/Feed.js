@@ -65,17 +65,10 @@ function Feed({ type }) {
       const response = await fetch(url, options);
       const data = await response.json();
       let fetchResult = data.data.children;
-      if (key === "default") {
-        fetchResult.forEach((obj) => {
-          obj.isToken = false;
-          obj.feedType = type;
-        });
-      } else {
-        fetchResult.forEach((obj) => {
-          obj.isToken = true;
-          obj.feedType = type;
-        });
-      }
+      fetchResult.forEach((obj) => {
+        obj.isToken = !!accessToken;
+        obj.feedType = type;
+      });
 
       if (startFeedFromScratch) {
         setFeedContent(fetchResult);

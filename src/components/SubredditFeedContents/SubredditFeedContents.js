@@ -1,18 +1,28 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useEffect, useState, useCallback, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import { decode } from "html-entities";
 import "./SubredditFeedContents.css";
 
-const SubredditFeedContents = ({ feedType, subreddit }) => {
+const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [feedContent, setFeedContent] = useState([]);
   const [after, setAfter] = useState(null);
   const loadingRef = useRef(false);
   const scrollRef = useRef(null);
 
+  useImperativeHandle(ref, () => ({
+    loadMorePosts,
+  }));
+
   // function to access the feed content from api
-  // console.log(subreddit);
   async function getFeedContent(key, afterParam = null) {
     if (loadingRef.current) {
       console.log("still loading");
@@ -64,11 +74,7 @@ const SubredditFeedContents = ({ feedType, subreddit }) => {
       const data = await response.json();
       let fetchResult = data.data.children;
       fetchResult.forEach((obj) => {
-        if (key === "default") {
-          obj.isToken = false;
-        } else {
-          obj.isToken = true;
-        }
+        obj.isToken = !!accessToken;
         obj.feedType = feedType;
         obj.subreddit = subreddit;
       });
@@ -123,8 +129,34 @@ const SubredditFeedContents = ({ feedType, subreddit }) => {
     }
   }, [accessToken, feedType, subreddit]);
 
+  // event-listener-esque function to check if element is at end of scroll
+  const handleScroll = useCallback(() => {
+    const element = scrollRef.current;
+    if (element) {
+      const { scrollTop, scrollHeight, clientHeight } = element;
+      console.log(scrollTop, scrollHeight, clientHeight);
+      if (scrollHeight - scrollTop <= clientHeight * 1.2) {
+        loadMorePosts();
+      }
+    }
+  }, [loadMorePosts]);
+
+  // effect to add eventlistener to scrollabel element through accessing refernce
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (element) {
+      element.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (element) {
+        element.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [handleScroll]);
+
   // mapping of posts
   const items = feedContent.map((post) => {
+    console.log(post);
     const postData = post.data;
     const permalink = postData.permalink.slice(1, -1);
     let thumbnail;
@@ -197,11 +229,21 @@ const SubredditFeedContents = ({ feedType, subreddit }) => {
         </div>
         <div className="FeedActions">
           <button type="button" className="Upvote">
-            <i className="fa-xl fa-solid fa-arrow-up"></i>
+            <i
+              className={
+                "fa-xl fa-solid fa-arrow-up" +
+                (postData.likes === true ? " upvoted" : "")
+              }
+            ></i>
           </button>
           <div className="FeedKarma">{shortenNumber(postData.score)}</div>
           <button type="button" className="Downvote">
-            <i className="fa-xl fa-solid fa-arrow-down"></i>
+            <i
+              className={
+                "fa-xl fa-solid fa-arrow-down" +
+                (postData.likes === false ? " downvoted" : "")
+              }
+            ></i>
           </button>
         </div>
       </Link>
@@ -214,6 +256,6 @@ const SubredditFeedContents = ({ feedType, subreddit }) => {
       <div className="FeedLoading">loading...</div>
     </div>
   );
-};
+});
 
 export default SubredditFeedContents;

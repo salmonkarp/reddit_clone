@@ -145,7 +145,15 @@
     color: var(--reddit-orange);
 }
 
+.FeedActions .Upvote .upvoted {
+    color: var(--reddit-orange);
+}
+
 .FeedActions .Downvote:hover  > i{
+    color: rgb(87, 137, 213);
+}
+
+.FeedActions .Downvote .downvoted {
     color: rgb(87, 137, 213);
 }
 

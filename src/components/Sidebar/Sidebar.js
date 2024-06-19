@@ -61,7 +61,7 @@ function Sidebar() {
     document.querySelectorAll(".SidebarTopItem").forEach((item) => {
       item.classList.remove("active");
     });
-    console.log("path", pathname);
+    // console.log("path", pathname);
     if (pathname === "/") {
       document.querySelector(".SidebarTopItem.Home").classList.add("active");
     }

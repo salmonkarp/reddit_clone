@@ -19,7 +19,8 @@ const SubredditFeed = () => {
   const [feedType, setFeedType] = useState("hot");
   const [after, setAfter] = useState(null);
   const loadingRef = useRef(false);
-  const scrollRef = useRef(null);
+  const parentRef = useRef(null);
+  const childRef = useRef(null);
 
   // function to access the feed content from api
   async function getSubredditAbout() {
@@ -110,6 +111,24 @@ const SubredditFeed = () => {
     return `${shortNum}${suffixes[i]}`;
   };
 
+  // handle annoying scrolling behaviour
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!parentRef.current) return;
+      const { scrollTop, scrollHeight, clientHeight } = parentRef.current;
+      if (scrollHeight - scrollTop <= clientHeight * 1.2) {
+        if (childRef.current) {
+          childRef.current.loadMorePosts();
+        }
+      }
+    };
+    const parentElement = parentRef.current;
+    parentElement.addEventListener("scroll", handleScroll);
+    return () => {
+      parentElement.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   let i = 0;
   const rules = subredditRules.map((rule) => {
     i++;
@@ -118,7 +137,7 @@ const SubredditFeed = () => {
       expandButton = <i className="fa-solid fa-angle-down"></i>;
     }
     return (
-      <div className="SubredditRule">
+      <div className="SubredditRule" key={"rule" + i}>
         <button
           type="button"
           onClick={(event) => toggleCollapse(event.currentTarget)}
@@ -139,7 +158,7 @@ const SubredditFeed = () => {
   });
 
   return (
-    <div className="SubredditFeed" ref={scrollRef}>
+    <div className="SubredditFeed" ref={parentRef}>
       <div className="SubredditFeedTop">
         <div
           style={{
@@ -230,6 +249,7 @@ const SubredditFeed = () => {
           <SubredditFeedContents
             feedType={feedType}
             subreddit={subreddit}
+            ref={childRef}
           ></SubredditFeedContents>
         </div>
         <div className="SubredditFeedDetails">

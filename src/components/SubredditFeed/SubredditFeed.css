@@ -33,6 +33,11 @@
     flex-direction: row;
     gap: 10px;
     padding-right: 10px;
+    /* align-items: center; */
+    @media (max-width: 600px) {
+        align-items: center;
+        padding: 0;
+    }
 }
 
 .SubredditIcon {
@@ -44,12 +49,25 @@
     top: -50px;
     left: 20px;
     background-color: black;
+    @media (max-width: 600px) {
+        width: 50px;
+        height: 50px;
+        top: 0px;
+        left:0px;
+    }
 }
 
 .SubredditName {
     margin-left: 25px;
     font-size: 1.8rem;
     margin-top: 10px;
+    @media (max-width: 600px) {
+        font-size: 15px;
+        margin-left: 0px;
+        margin-top: 0px;
+        display: flex;
+        align-items: center;
+    }
 }
 
 .SubredditFeedTopDetails button {
@@ -61,6 +79,11 @@
     padding-inline: 15px;
     background: none;
     cursor: pointer;
+    @media (max-width: 600px) {
+        font-size: 12px;
+        padding-inline: 5px;
+        border-radius: 12px;
+    }
 }
 
 .SubredditFeedTopDetails button:hover {
@@ -94,6 +117,12 @@
     height: max-content;
     position: sticky;
     top: 0px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 80vh;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    /* --scrollbar-background: black black; */
     @media (max-width:1200px) {
         display: none;
     }
@@ -122,7 +151,7 @@
 
 .collapseContent {
     font-size: 0.7rem;
-    text-align: justify;
+    text-align: distribute;
     margin-block: 10px;
 }
 
@@ -135,11 +164,12 @@
     cursor: pointer;
     padding-block: 10px;
     width: calc(100%);
-    transform: translateX(-20px);
-    padding-left: 20px;
+    transform: translateX(-10px);
+    padding-left: 10px;
     padding-right: 20px;
     display: flex;
     flex-direction: row;
+    
 }
 
 .SubredditRule button div {
@@ -178,12 +208,21 @@
 }
 
 .ActiveSymbol {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     background-color: limegreen;
     border-radius: 50%;
     margin-left: auto;
     margin-right: 5px;
+    animation: activeGlow;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes activeGlow {
+    0% {background-color: limegreen; scale: 1;}
+    50% {background-color: green; scale: 1.1;}
+    100% {background-color: limegreen; scale: 1;}
 }
 
 .SRTypeSelector {
@@ -210,6 +249,11 @@
     padding-block: 5px;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: 700;
+}
+
+.SRTypeSelector input:hover + span {
+    background-color: var(--lighter-gray);
 }
 
 .SRTypeSelector input:checked + span {

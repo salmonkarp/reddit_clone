@@ -39,7 +39,7 @@ function Reddit() {
         const data = await response.json();
         dispatch(setAccessToken(data.access_token));
       }
-      window.history.replaceState({}, "", window.location.pathname); // clean up uri to hide any codes
+      window.history.replaceState({}, "", window.location.pathname);
     } catch (error) {
       console.error(error);
     }
