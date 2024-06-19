@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { decode } from "html-entities";
-import "./Feed.css";
+import "./SubredditFeedContents.css";
 
-function Feed({ type }) {
+const SubredditFeedContents = ({ feedType, subreddit }) => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [feedContent, setFeedContent] = useState([]);
   const [after, setAfter] = useState(null);
@@ -12,6 +12,7 @@ function Feed({ type }) {
   const scrollRef = useRef(null);
 
   // function to access the feed content from api
+  // console.log(subreddit);
   async function getFeedContent(key, afterParam = null) {
     if (loadingRef.current) {
       console.log("still loading");
@@ -37,12 +38,10 @@ function Feed({ type }) {
     }
 
     let url;
-    if (type == "home") {
-      url = "https://oauth.reddit.com/.json";
-    } else if (type == "popular") {
-      url = "https://oauth.reddit.com/r/popular.json";
+    if (feedType == "hot" || !feedType) {
+      url = `https://oauth.reddit.com/r/${subreddit}/hot.json`;
     } else {
-      url = "https://oauth.reddit.com/r/all.json";
+      url = `https://oauth.reddit.com/r/${subreddit}/${feedType}.json`;
     }
 
     if (afterParam) {
@@ -51,31 +50,28 @@ function Feed({ type }) {
     let previousFeed = feedContent;
     let startFeedFromScratch = false;
     if (previousFeed[0]) {
-      // console.log(previousFeed[0].isToken, "lastist");
       if (
         previousFeed[0].isToken != !!accessToken ||
-        previousFeed[0].feedType != type
+        previousFeed[0].feedType != feedType ||
+        previousFeed[0].subreddit != subreddit
       ) {
         startFeedFromScratch = true;
       }
     }
-    // console.log(startFeedFromScratch, "ifscrt");
 
     try {
       const response = await fetch(url, options);
       const data = await response.json();
       let fetchResult = data.data.children;
-      if (key === "default") {
-        fetchResult.forEach((obj) => {
+      fetchResult.forEach((obj) => {
+        if (key === "default") {
           obj.isToken = false;
-          obj.feedType = type;
-        });
-      } else {
-        fetchResult.forEach((obj) => {
+        } else {
           obj.isToken = true;
-          obj.feedType = type;
-        });
-      }
+        }
+        obj.feedType = feedType;
+        obj.subreddit = subreddit;
+      });
 
       if (startFeedFromScratch) {
         setFeedContent(fetchResult);
@@ -91,7 +87,6 @@ function Feed({ type }) {
     }
   }
 
-  // shortening function to load more posts
   const loadMorePosts = () => {
     if (accessToken) {
       getFeedContent(accessToken, after);
@@ -99,42 +94,6 @@ function Feed({ type }) {
       getFeedContent("default", after);
     }
   };
-
-  // effect to trigger post fetching
-  useEffect(() => {
-    loadingRef.current = false;
-    setFeedContent([]);
-    if (accessToken) {
-      getFeedContent(accessToken);
-    } else {
-      getFeedContent("default");
-    }
-  }, [accessToken, type]);
-
-  // event-listener-esque function to check if element is at end of scroll
-  const handleScroll = useCallback(() => {
-    const element = scrollRef.current;
-    if (element) {
-      const { scrollTop, scrollHeight, clientHeight } = element;
-      if (scrollHeight - scrollTop <= clientHeight * 1.2) {
-        // Trigger the function if we are within 20% of the end
-        loadMorePosts();
-      }
-    }
-  }, [loadMorePosts]);
-
-  // effect to add eventlistener to scrollabel element through accessing refernce
-  useEffect(() => {
-    const element = scrollRef.current;
-    if (element) {
-      element.addEventListener("scroll", handleScroll);
-    }
-    return () => {
-      if (element) {
-        element.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [handleScroll]);
 
   const shortenNumber = (num) => {
     if (num < 1000) {
@@ -152,6 +111,17 @@ function Feed({ type }) {
 
     return `${shortNum}${suffixes[i]}`;
   };
+
+  // effect to trigger post fetching
+  useEffect(() => {
+    loadingRef.current = false;
+    setFeedContent([]);
+    if (accessToken) {
+      getFeedContent(accessToken);
+    } else {
+      getFeedContent("default");
+    }
+  }, [accessToken, feedType, subreddit]);
 
   // mapping of posts
   const items = feedContent.map((post) => {
@@ -181,7 +151,7 @@ function Feed({ type }) {
           className="FeedThumbnail"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "reddit-icon.png";
+            e.target.src = "../reddit-icon.png";
           }}
         />
       );
@@ -199,10 +169,10 @@ function Feed({ type }) {
     return (
       <Link
         key={postData.id}
-        className="FeedPost"
+        className="FeedPost SRFeedPost"
         to={`/${permalink}`}
         feed_access_token={Boolean(accessToken).toString()}
-        feed_type={type}
+        feed_type={feedType}
       >
         {thumbnail}
 
@@ -239,13 +209,11 @@ function Feed({ type }) {
   });
 
   return (
-    <>
-      <div className="Feed" ref={scrollRef}>
-        {items}
-        <div className="FeedLoading">loading...</div>
-      </div>
-    </>
+    <div className="SubredditFeedContents" ref={scrollRef}>
+      {items}
+      <div className="FeedLoading">loading...</div>
+    </div>
   );
-}
+};
 
-export default Feed;
+export default SubredditFeedContents;

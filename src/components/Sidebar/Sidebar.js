@@ -131,7 +131,7 @@ function Sidebar() {
     >
       <img
         src={
-          subreddit.data.community_icon.split("?")[0] || "subredditDefault.svg"
+          subreddit.data.community_icon.split("?")[0] || "/subredditDefault.svg"
         }
         alt={subreddit.data.display_name}
       />

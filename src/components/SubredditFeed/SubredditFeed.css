@@ -15,14 +15,16 @@
 .SubredditFeedTop {
     height: 200px;
     width: calc(100% - 10px);
+    /* border-bottom: solid 1px var(--lighter-gray); */
     /* border-radius: 10px; */
     /* outline: solid 2px red; */
 }
 
+
 .SubredditBanner {
     height: 80%;
     background-position: center;
-    background-size: contain;
+    background-size:auto;
     border-radius: 10px;
 }
 
@@ -41,6 +43,7 @@
     position: relative;
     top: -50px;
     left: 20px;
+    background-color: black;
 }
 
 .SubredditName {
@@ -67,4 +70,152 @@
 
 .CreatePostButton {
     margin-left: auto;
+}
+
+.SubredditFeedBottom {
+    display: flex;
+    flex-direction: row;
+    margin-top: 40px;
+    /* width: calc(100% - 20px); */
+}
+
+.SubredditFeedReal {
+    width: 70%;
+    @media (max-width:1200px) {
+        width: 100%;
+    }
+}
+
+.SubredditFeedDetails {
+    width: 25% !important;
+    background-color: var(--hover-gray);
+    border-radius: 10px;
+    padding: 20px;
+    height: max-content;
+    position: sticky;
+    top: 0px;
+    @media (max-width:1200px) {
+        display: none;
+    }
+}
+
+.SubredditDetailsDescription {
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+
+.SubredditMoreDetails {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-block: 20px;
+}
+
+.SubredditFeedDetails > hr {
+    margin-bottom: 10px;
+}
+
+.SubredditRule {
+    font-size: 0.8rem;
+}
+
+.collapseContent {
+    font-size: 0.7rem;
+    text-align: justify;
+    margin-block: 10px;
+}
+
+.SubredditRule button {
+    border: none;
+    outline: none;
+    background: none;
+    width: 100%;
+    text-align: start;
+    cursor: pointer;
+    padding-block: 10px;
+    width: calc(100%);
+    transform: translateX(-20px);
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.SubredditRule button div {
+    font-size: 0.8rem;
+    max-width: 90%;
+}
+
+.SubredditRule button i {
+    position: absolute;
+    right:20px;
+}
+
+.SubredditRule button:hover {
+    background-color: var(--lighter-gray);
+}
+
+.JoinSubredditButton.joined {
+    background-color: white;
+    color: var(--plain-black);
+}
+
+/* .JoinSubredditButton.joined:hover {
+    background-color: var(--plain-black);
+    color: white;
+} */
+
+.collapseContent {
+    display: none;
+    width: 100%;
+    opacity: 0.5;
+}
+
+.collapseContent * {
+    font-size: 0.8rem;
+    list-style-position: inside;
+}
+
+.ActiveSymbol {
+    width: 12px;
+    height: 12px;
+    background-color: limegreen;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: 5px;
+}
+
+.SRTypeSelector {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 0px;
+}
+
+.SRTypeSelector input {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    
+}
+
+.SRTypeSelector label span {
+    background-color: var(--hover-gray);
+    padding-inline: 10px;
+    padding-block: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.SRTypeSelector input:checked + span {
+    background-color: var(--lighter-gray);
+}
+
+.SubredditFeedContents {
+    margin-top: 30px;
 }

@@ -7,7 +7,9 @@ import "./LoginState.css";
 
 function LoginState({ authorize, toggleMobileSidebar }) {
   const accessToken = useSelector((state) => state.auth.accessToken);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({
+    icon_img: "",
+  });
   const dispatch = useDispatch();
   const loginRef = useRef();
 
