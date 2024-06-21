@@ -1,0 +1,165 @@
+.Comment {
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    padding-left: 20px;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.CommentMain {
+    width: 70%;
+}
+
+.CommentMainDetails {
+    width: 100%;
+}
+
+.UserDetails {
+    display: flex;
+    flex-direction: row;
+}
+
+.CommentCommunityIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.CommentCommunityName {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.UserDetailsHelper {
+    margin-left: 10px;
+}
+
+.CommentAuthor {
+    display: flex;
+    flex: row;
+    margin-top: 3px;
+}
+
+.CommentAuthor div:not(.CommentAuthorFlair) {
+    font-size: 14px;
+}
+
+.CommentAuthorFlair {
+    margin-left: 10px;
+    font-size: 12px;
+    border-radius: 10px;
+    padding-inline: 10px;
+}
+
+.CommentTitle {
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.CommentDesc {
+    text-align: distribute;
+    margin-right: 40px;
+    list-style-position: inside;
+    margin-top: 10px;
+}
+
+.CommentDesc p,ul {
+    margin-bottom: 20px;
+}
+
+.CommentDesc * {
+    font-size: 16px;
+}
+
+.CommentDesc a{
+    color: var(--downvote-blue);
+}
+
+.CommentDesc a:hover {
+    color: white;
+}
+
+.CommentMedia {
+    width: calc(100% - 20px);
+    height: 400px;
+    background-color: var(--hover-gray);
+    border-radius: 20px;
+    margin-top: 10px;
+    object-fit: contain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.CommentFlair {
+    width: min-content;
+    font-size: 14px;
+    border-radius: 10px;
+    padding-inline: 10px;
+    margin-block: 10px;
+}
+
+.CommentMediaInside {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    box-shadow: 5px 0px 30px 2px rgba(151, 151, 151, 0.13) ;
+}
+
+.CommentOriLink {
+    font-size: 14px;
+    color: var(--downvote-blue);
+}
+
+.CommentActions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.CommentActions div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--hover-gray);
+    border-radius: 10px;
+    padding-inline: 10px;
+    padding-block: 5px;
+    font-weight: 700;
+}
+
+.CommentVote button {
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.CommentComment i, .CommentShare i{
+    margin-left: 10px;
+}
+.CommentVote button .fa-arrow-up {
+    margin-left: 5px;
+}
+
+.CommentAdd {
+    border: var(--subtle-line);
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: var(--hover-gray);
+    padding-block: 12px;
+    padding-inline: 24px;
+    border-radius: 10px;
+    width: calc(100% - 68px);
+    height:20px;
+    font-size: 16px;
+    color: white;
+    overflow-x: auto;
+    margin-top: 10px;
+}

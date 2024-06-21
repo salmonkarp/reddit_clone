@@ -153,7 +153,11 @@ function Feed({ type }) {
     let thumbnail;
     const thumbnailUrl =
       postData.thumbnail !== "image" ? postData.thumbnail : postData.url;
-    if (postData.secure_media && postData.secure_media.reddit_video) {
+    if (
+      postData.secure_media &&
+      postData.secure_media.reddit_video &&
+      postData.thumbnail !== "nsfw"
+    ) {
       thumbnail = (
         <video
           src={postData.secure_media.reddit_video.fallback_url}
@@ -220,11 +224,21 @@ function Feed({ type }) {
         </div>
         <div className="FeedActions">
           <button type="button" className="Upvote">
-            <i className="fa-xl fa-solid fa-arrow-up"></i>
+            <i
+              className={
+                "fa-xl fa-solid fa-arrow-up" +
+                (postData.likes === true ? " upvoted" : "")
+              }
+            ></i>
           </button>
           <div className="FeedKarma">{shortenNumber(postData.score)}</div>
           <button type="button" className="Downvote">
-            <i className="fa-xl fa-solid fa-arrow-down"></i>
+            <i
+              className={
+                "fa-xl fa-solid fa-arrow-down" +
+                (postData.likes === false ? " downvoted" : "")
+              }
+            ></i>
           </button>
         </div>
       </Link>

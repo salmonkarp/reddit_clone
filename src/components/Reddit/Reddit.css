@@ -1,17 +1,18 @@
 :root {
-    --plain-black: #0e1113;
-    --subtle-line: solid 1px rgb(48, 48, 48);
-    --reddit-orange: #ff4500;
-    --hover-gray: #24292c;
-    --lighter-gray: #3e4447;
-  }
+  --plain-black: #0e1113;
+  --subtle-line: solid 1px rgb(48, 48, 48);
+  --reddit-orange: #ff4500;
+  --hover-gray: #24292c;
+  --lighter-gray: #444a4e;
+  --downvote-blue: rgb(87, 137, 213);
+}
   
   * {
     margin:0;
     padding:0;
     box-sizing: border-box;
     transition: all 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
-    /* user-select: none; */
+    user-select: none;
     font-size: 18px;
     @media (max-width: 600px) {
       font-size: 12px;

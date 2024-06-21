@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import "./Sidebar.css";
 
 function Sidebar() {
@@ -61,7 +61,6 @@ function Sidebar() {
     document.querySelectorAll(".SidebarTopItem").forEach((item) => {
       item.classList.remove("active");
     });
-    // console.log("path", pathname);
     if (pathname === "/") {
       document.querySelector(".SidebarTopItem.Home").classList.add("active");
     }
@@ -71,6 +70,14 @@ function Sidebar() {
     if (pathname === "/all") {
       document.querySelector(".SidebarTopItem.All").classList.add("active");
     }
+
+    document.querySelectorAll(".SidebarCommunitiesItem").forEach((item) => {
+      item.classList.remove("active");
+      console.log(pathname, item.attributes.value.value);
+      if (pathname.startsWith("/r/" + item.attributes.value.value)) {
+        item.classList.add("active");
+      }
+    });
   };
 
   // fetch user data if accessToken exists
@@ -127,6 +134,7 @@ function Sidebar() {
     <Link
       className="SidebarCommunitiesItem"
       key={subreddit.data.display_name}
+      value={subreddit.data.display_name}
       to={`/r/${subreddit.data.display_name}`}
     >
       <img

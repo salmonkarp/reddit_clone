@@ -56,7 +56,12 @@ function Header({ authorize, toggleMobileSidebar }) {
 
   return (
     <div className="Header">
-      <div className="HeaderLeft">
+      <div
+        className="HeaderLeft"
+        onClick={() => {
+          window.location.href = "/";
+        }}
+      >
         <i className="fa-brands fa-reddit fa-2xl"></i>
         <h1>Reddit</h1>
       </div>

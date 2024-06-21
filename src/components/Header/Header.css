@@ -19,6 +19,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    cursor: pointer;
+}
+
+.HeaderLeft h1 {
+    font-size: 32px;
 }
 
 .fa-reddit {

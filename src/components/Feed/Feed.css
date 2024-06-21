@@ -150,11 +150,11 @@
 }
 
 .FeedActions .Downvote:hover  > i{
-    color: rgb(87, 137, 213);
+    color: var(--downvote-blue);
 }
 
 .FeedActions .Downvote .downvoted {
-    color: rgb(87, 137, 213);
+    color: var(--downvote-blue);
 }
 
 .FeedLoading {

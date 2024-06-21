@@ -31,6 +31,20 @@
     gap: 10px;
 }
 
+.LoginStateDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.LoginStateDetails h5 {
+    font-weight: 500;
+}
+
+.UserKarma {
+    font-size: 14px;
+}
+
 .LoginState img {
     height: 100%;
     border-radius: 30px;

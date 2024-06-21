@@ -5,6 +5,7 @@ import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
 import MobileSidebar from "../MobileSidebar/MobileSidebar";
 import SubredditFeed from "../SubredditFeed/SubredditFeed";
+import Comment from "../Comment/Comment";
 import { setAccessToken, setUserData, setUserFavSubs } from "../../store/store";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Feed from "../Feed/Feed";
@@ -96,6 +97,10 @@ function Reddit() {
             <Route path="/popular" element={<Feed type="popular" />} />
             <Route path="/all" element={<Feed type="all" />} />
             <Route path="/r/:subreddit" element={<SubredditFeed />} />
+            <Route
+              path="/r/:subreddit/comments/:postId/:postTitle"
+              element={<Comment />}
+            />
           </Routes>
         </div>
       </Router>

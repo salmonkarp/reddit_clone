@@ -134,7 +134,6 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
     const element = scrollRef.current;
     if (element) {
       const { scrollTop, scrollHeight, clientHeight } = element;
-      console.log(scrollTop, scrollHeight, clientHeight);
       if (scrollHeight - scrollTop <= clientHeight * 1.2) {
         loadMorePosts();
       }
@@ -214,7 +213,7 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
               postData.title.length > 100
                 ? postData.title.slice(0, 100) + "..."
                 : postData.title
-            )}
+            ) + (postData.stickied ? " 📌" : "")}
           </h2>
           <div className="FeedSubreddit">
             {postData.subreddit_name_prefixed}
