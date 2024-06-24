@@ -11,6 +11,13 @@ function Feed({ type }) {
   const loadingRef = useRef(false);
   const scrollRef = useRef(null);
 
+  const getUrl = (imgUrl) => {
+    let encoded = imgUrl.replace("amp;s", "s");
+    let doubleEncoded = encoded.replace("amp;", "");
+    let tripleEncoded = doubleEncoded.replace("amp;", "");
+    return tripleEncoded;
+  };
+
   // function to access the feed content from api
   async function getFeedContent(key, afterParam = null) {
     if (loadingRef.current) {

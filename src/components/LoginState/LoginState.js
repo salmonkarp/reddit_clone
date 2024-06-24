@@ -100,7 +100,7 @@ function LoginState({ authorize, toggleMobileSidebar }) {
         </div>
       </div>
 
-      <img src={userData.icon_img.split("?")[0]} alt={userData.name} />
+      <img src={userData.icon_img.split("?")[0] || ""} alt={userData.name} />
       <button type="button" onClick={() => handleLogout()}>
         Logout
       </button>

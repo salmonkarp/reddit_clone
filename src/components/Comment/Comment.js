@@ -6,6 +6,7 @@ import { decode } from "html-entities";
 import ReactMarkdown from "react-markdown";
 import SubredditDetails from "../SubredditDetails/SubredditDetails";
 import timeAgo from "../../scripts/getTimeAgo";
+import ImageGallery from "react-image-gallery";
 import "./Comment.css";
 
 const Comment = () => {
@@ -18,6 +19,13 @@ const Comment = () => {
   });
   let userFlair = null;
   const accessToken = useSelector((state) => state.auth.accessToken);
+
+  const getUrl = (imgUrl) => {
+    let encoded = imgUrl.replace("amp;s", "s");
+    let doubleEncoded = encoded.replace("amp;", "");
+    let tripleEncoded = doubleEncoded.replace("amp;", "");
+    return tripleEncoded;
+  };
 
   // function to access comment details
   async function getCommentDetails() {
@@ -114,16 +122,56 @@ const Comment = () => {
               src={commentDetails.media.reddit_video.fallback_url}
               controls
               alt=""
+              className="CommentMediaInside CommentVideo"
+            />
+          </div>
+        );
+      }
+      if (commentDetails.is_gallery) {
+        const images = [];
+        commentDetails.gallery_data.items.forEach((item) => {
+          images.push({
+            original: `https://i.redd.it/${item.media_id}.jpg`,
+          });
+        });
+        return (
+          <ImageGallery
+            items={images}
+            className="CommentMediaInside"
+            showPlayButton={false}
+          />
+        );
+      }
+
+      if (
+        commentDetails.thumbnail != "self" &&
+        commentDetails.is_reddit_media_domain
+      ) {
+        return (
+          <div
+            className="CommentMedia"
+            style={{ "--image-url": `url(${getUrl(commentDetails.url)})` }}
+          >
+            <img
+              src={commentDetails.url}
+              alt=""
               className="CommentMediaInside"
             />
           </div>
         );
       }
-      if (commentDetails.thumbnail != "self") {
+      if (!commentDetails.is_reddit_media_domain && commentDetails.preview) {
         return (
-          <div className="CommentMedia">
+          <div
+            className="CommentMedia"
+            style={{
+              "--image-url": `url(${getUrl(
+                commentDetails.preview.images[0].source.url
+              )})`,
+            }}
+          >
             <img
-              src={commentDetails.url}
+              src={getUrl(commentDetails.preview.images[0].source.url)}
               alt=""
               className="CommentMediaInside"
             />
@@ -158,6 +206,14 @@ const Comment = () => {
       console.error(error);
       return <div className="CommentFlair"></div>;
     }
+  };
+
+  const getCommentTree = () => {
+    if (!commentTree) {
+      return;
+    }
+
+    return <div className="CommentMainTree"></div>;
   };
 
   console.log(commentDetails);
@@ -245,7 +301,7 @@ const Comment = () => {
             placeholder="Add a comment..."
           ></input>
         </div>
-        <div className="CommentMainTree"></div>
+        {getCommentTree()}
       </div>
       <SubredditDetails subreddit={subreddit}></SubredditDetails>
     </div>

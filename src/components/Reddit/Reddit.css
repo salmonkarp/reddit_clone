@@ -1,3 +1,5 @@
+@import "~react-image-gallery/styles/css/image-gallery.css";
+
 :root {
   --plain-black: #0e1113;
   --subtle-line: solid 1px rgb(48, 48, 48);
