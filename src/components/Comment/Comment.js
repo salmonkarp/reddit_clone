@@ -1,13 +1,14 @@
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useEffect, useState, useCallback, useRef } from "react";
-import { decode } from "html-entities";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import SubredditDetails from "../SubredditDetails/SubredditDetails";
 import timeAgo from "../../scripts/getTimeAgo";
-import ImageGallery from "react-image-gallery";
 import "./Comment.css";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import MarkdownComponent from "../ReactGFM";
+import { Carousel } from "react-responsive-carousel";
 
 const Comment = () => {
   const { subreddit, postId, postTitle } = useParams();
@@ -130,16 +131,37 @@ const Comment = () => {
       if (commentDetails.is_gallery) {
         const images = [];
         commentDetails.gallery_data.items.forEach((item) => {
-          images.push({
-            original: `https://i.redd.it/${item.media_id}.jpg`,
-          });
+          let mediaId = item.media_id;
+          if (commentDetails.media_metadata[mediaId].m == "image/jpg") {
+            images.push(
+              <div className="CommentMedia" onClick={() => displayMediaModal()}>
+                <img
+                  src={`https://i.redd.it/${item.media_id}.jpg`}
+                  alt=""
+                  className="CommentMediaInside"
+                />
+              </div>
+            );
+          } else {
+            images.push(
+              <div className="CommentMedia" onClick={() => displayMediaModal()}>
+                <img
+                  src={`https://i.redd.it/${item.media_id}.png`}
+                  alt=""
+                  className="CommentMediaInside"
+                />
+              </div>
+            );
+          }
         });
         return (
-          <ImageGallery
-            items={images}
-            className="CommentMediaInside"
-            showPlayButton={false}
-          />
+          <Carousel
+            showStatus={false}
+            showThumbs={false}
+            onClickItem={() => generateGalleryModal()}
+          >
+            {images}
+          </Carousel>
         );
       }
 
@@ -148,26 +170,48 @@ const Comment = () => {
         commentDetails.is_reddit_media_domain
       ) {
         return (
-          <div
-            className="CommentMedia"
-            style={{ "--image-url": `url(${getUrl(commentDetails.url)})` }}
-          >
-            <img
-              src={commentDetails.url}
-              alt=""
-              className="CommentMediaInside"
-            />
-          </div>
+          <>
+            <div
+              className="CommentMedia"
+              style={{ "--image-url": `url(${getUrl(commentDetails.url)})` }}
+              onClick={() => displayMediaModal()}
+            >
+              <img
+                src={commentDetails.url}
+                alt=""
+                className="CommentMediaInside"
+              />
+            </div>
+            <div
+              className="MediaModal"
+              style={{ "--image-url": `url(${getUrl(commentDetails.url)})` }}
+            >
+              <img
+                src={commentDetails.url}
+                alt=""
+                className="MediaModalInside"
+              />
+              <button
+                type="button"
+                onClick={() => hideMediaModal()}
+                className="CloseMediaModalButton"
+              >
+                <i class="fa-xl fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </>
         );
       }
       if (!commentDetails.is_reddit_media_domain && commentDetails.preview) {
         return (
           <div
             className="CommentMedia"
+            onClick={() => displayMediaModal()}
             style={{
               "--image-url": `url(${getUrl(
                 commentDetails.preview.images[0].source.url
               )})`,
+              cursor: "default",
             }}
           >
             <img
@@ -216,6 +260,44 @@ const Comment = () => {
     return <div className="CommentMainTree"></div>;
   };
 
+  const displayMediaModal = () => {
+    if (document.querySelector(".MediaModal")) {
+      document.querySelector(".MediaModal").style.display = "flex";
+    }
+  };
+
+  const hideMediaModal = () => {
+    if (document.querySelector(".MediaModal")) {
+      document.querySelector(".MediaModal").style.display = "none";
+    }
+    try {
+      document
+        .querySelector(".Comment")
+        .removeChild(document.querySelector(".MediaModal"));
+    } catch {
+      console.log("lol");
+    }
+  };
+
+  const generateGalleryModal = () => {
+    let selectedMediaUrl = document
+      .querySelector(".slide.selected")
+      .querySelector(".CommentMediaInside").src;
+    let dynamicModal = document.createElement("div");
+    dynamicModal.className = "MediaModal";
+    dynamicModal.style.display = "flex";
+    dynamicModal.style.setProperty("--image-url", `url(${selectedMediaUrl})`);
+    dynamicModal.innerHTML = `
+      <img src="${selectedMediaUrl}" alt="" class="MediaModalInside" />
+      <button type="button" class="CloseMediaModalButton" onclick="hideMediaModal()">
+        <i class="fa-xl fa-solid fa-xmark"></i>
+      </button>
+    `;
+    dynamicModal.querySelector(".CloseMediaModalButton").onclick =
+      hideMediaModal;
+    document.querySelector(".Comment").appendChild(dynamicModal);
+  };
+
   console.log(commentDetails);
 
   return (
@@ -252,9 +334,12 @@ const Comment = () => {
             {commentDetails ? commentDetails.title : ""}
           </div>
           <div className="CommentDesc">
-            <ReactMarkdown
+            {/* <ReactMarkdown
               children={commentDetails ? commentDetails.selftext : ""}
-            ></ReactMarkdown>
+            ></ReactMarkdown> */}
+            <MarkdownComponent
+              content={commentDetails ? commentDetails.selftext : ""}
+            ></MarkdownComponent>
           </div>
           {getCommentFlair()}
           <Link

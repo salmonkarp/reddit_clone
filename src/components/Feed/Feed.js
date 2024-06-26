@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { decode } from "html-entities";
+import getUrl from "../../scripts/getUrl";
+import formatDuration from "../../scripts/formatDuration";
 import "./Feed.css";
 
 function Feed({ type }) {
@@ -10,13 +12,6 @@ function Feed({ type }) {
   const [after, setAfter] = useState(null);
   const loadingRef = useRef(false);
   const scrollRef = useRef(null);
-
-  const getUrl = (imgUrl) => {
-    let encoded = imgUrl.replace("amp;s", "s");
-    let doubleEncoded = encoded.replace("amp;", "");
-    let tripleEncoded = doubleEncoded.replace("amp;", "");
-    return tripleEncoded;
-  };
 
   // function to access the feed content from api
   async function getFeedContent(key, afterParam = null) {
@@ -163,24 +158,43 @@ function Feed({ type }) {
     if (
       postData.secure_media &&
       postData.secure_media.reddit_video &&
-      postData.thumbnail !== "nsfw"
+      postData.thumbnail !== "nsfw" &&
+      postData.preview
     ) {
       thumbnail = (
-        <video
-          src={postData.secure_media.reddit_video.fallback_url}
-          controls
+        <img
+          src={getUrl(postData.preview.images[0].source.url)}
+          alt=""
           className="FeedThumbnail"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "reddit-icon.png";
+          }}
         />
       );
     } else if (
       postData.thumbnail !== "self" &&
       postData.thumbnail !== "default" &&
       postData.thumbnail !== "nsfw" &&
-      postData.thumbnail !== "spoiler"
+      postData.thumbnail !== "spoiler" &&
+      !postData.is_gallery &&
+      postData.preview
     ) {
       thumbnail = (
         <img
-          src={thumbnailUrl.split("?")[0]}
+          src={getUrl(postData.preview.images[0].source.url)}
+          alt=""
+          className="FeedThumbnail"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "reddit-icon.png";
+          }}
+        />
+      );
+    } else if (postData.is_gallery) {
+      thumbnail = (
+        <img
+          src={thumbnailUrl}
           alt=""
           className="FeedThumbnail"
           onError={(e) => {
@@ -200,6 +214,26 @@ function Feed({ type }) {
         </div>
       );
     }
+
+    let galleryIndicator = null;
+    if (postData.is_gallery) {
+      galleryIndicator = (
+        <div className="galleryIndicator">
+          <i class="fa-solid fa-images"></i>
+          {postData.gallery_data.items.length}
+        </div>
+      );
+    }
+
+    let videoIndicator = null;
+    if (postData.is_video) {
+      videoIndicator = (
+        <div className="videoIndicator">
+          <i class="fa-solid fa-circle-play"></i>
+          {formatDuration(postData.media.reddit_video.duration)}
+        </div>
+      );
+    }
     return (
       <Link
         key={postData.id}
@@ -209,6 +243,8 @@ function Feed({ type }) {
         feed_type={type}
       >
         {thumbnail}
+        {galleryIndicator}
+        {videoIndicator}
 
         <div className="FeedDetails">
           <h2 className="FeedTitle">

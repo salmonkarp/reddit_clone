@@ -9,7 +9,10 @@ import {
   forwardRef,
 } from "react";
 import { decode } from "html-entities";
+import getUrl from "../../scripts/getUrl";
+import formatDuration from "../../scripts/formatDuration";
 import "./SubredditFeedContents.css";
+import Markdown from "react-markdown";
 
 const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
   const accessToken = useSelector((state) => state.auth.accessToken);
@@ -25,30 +28,21 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
   // function to access the feed content from api
   async function getFeedContent(key, afterParam = null) {
     if (loadingRef.current) {
-      console.log("still loading");
       return;
     }
     loadingRef.current = true;
-    let options;
-    if (key === "default") {
-      options = {
-        method: "GET",
-        headers: {
-          "User-Agent": "Reddit_App",
-        },
-      };
-    } else {
-      options = {
-        method: "GET",
-        headers: {
-          "User-Agent": "Reddit_App",
-          Authorization: `bearer ${accessToken}`,
-        },
-      };
+    let options = {
+      method: "GET",
+      headers: {
+        "User-Agent": "Reddit_App",
+      },
+    };
+    if (key !== "default") {
+      options.headers.Authorization = `bearer ${accessToken}`;
     }
 
     let url;
-    if (feedType == "hot" || !feedType) {
+    if (feedType === "hot" || !feedType) {
       url = `https://oauth.reddit.com/r/${subreddit}/hot.json`;
     } else {
       url = `https://oauth.reddit.com/r/${subreddit}/${feedType}.json`;
@@ -61,9 +55,9 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
     let startFeedFromScratch = false;
     if (previousFeed[0]) {
       if (
-        previousFeed[0].isToken != !!accessToken ||
-        previousFeed[0].feedType != feedType ||
-        previousFeed[0].subreddit != subreddit
+        previousFeed[0].isToken !== !!accessToken ||
+        previousFeed[0].feedType !== feedType ||
+        previousFeed[0].subreddit !== subreddit
       ) {
         startFeedFromScratch = true;
       }
@@ -153,36 +147,107 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
     };
   }, [handleScroll]);
 
+  const getCommentFlair = (commentDetails) => {
+    try {
+      return (
+        <div
+          className="CommentFlair"
+          style={{
+            backgroundColor: commentDetails.link_flair_background_color,
+            color:
+              commentDetails.link_flair_text_color === "light"
+                ? "white"
+                : "black",
+            marginBlock: "5px",
+          }}
+        >
+          {commentDetails.link_flair_text}
+        </div>
+      );
+    } catch (error) {
+      console.error(error);
+      return <div className="CommentFlair"></div>;
+    }
+  };
+
+  const getAuthorFlair = (commentDetails) => {
+    try {
+      if (!commentDetails.author_flair_text) {
+        return;
+      }
+      return (
+        <div
+          className="CommentAuthorFlair"
+          style={{
+            backgroundColor:
+              commentDetails.author_flair_background_color || "white",
+            color:
+              commentDetails.author_flair_text_color === "light"
+                ? "white"
+                : "black",
+          }}
+        >
+          {commentDetails.author_flair_text}
+        </div>
+      );
+    } catch (error) {
+      console.error(error);
+      return <div className="CommentAuthorFlair"></div>;
+    }
+  };
+
   // mapping of posts
   const items = feedContent.map((post) => {
-    console.log(post);
+    // console.log(post);
     const postData = post.data;
     const permalink = postData.permalink.slice(1, -1);
     let thumbnail;
     const thumbnailUrl =
       postData.thumbnail !== "image" ? postData.thumbnail : postData.url;
-    if (postData.secure_media && postData.secure_media.reddit_video) {
+    if (
+      postData.secure_media &&
+      postData.secure_media.reddit_video &&
+      postData.preview
+    ) {
       thumbnail = (
-        <video
-          src={postData.secure_media.reddit_video.fallback_url}
-          controls
+        <img
+          src={getUrl(postData.preview.images[0].source.url)}
+          alt=""
           className="FeedThumbnail"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/reddit-icon.png";
+          }}
         />
       );
     } else if (
       postData.thumbnail !== "self" &&
       postData.thumbnail !== "default" &&
       postData.thumbnail !== "nsfw" &&
-      postData.thumbnail !== "spoiler"
+      postData.thumbnail !== "spoiler" &&
+      !postData.is_gallery &&
+      postData.preview
     ) {
       thumbnail = (
         <img
-          src={thumbnailUrl.split("?")[0]}
+          src={getUrl(postData.preview.images[0].source.url)}
           alt=""
           className="FeedThumbnail"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "../reddit-icon.png";
+            e.target.src = "/reddit-icon.png";
+          }}
+        />
+      );
+    } else if (postData.is_gallery) {
+      thumbnail = (
+        <img
+          src={thumbnailUrl}
+          alt=""
+          className="FeedThumbnail"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/reddit-icon.png";
           }}
         />
       );
@@ -197,6 +262,25 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
         </div>
       );
     }
+    let galleryIndicator = null;
+    if (postData.is_gallery) {
+      galleryIndicator = (
+        <div className="galleryIndicator">
+          <i class="fa-solid fa-images"></i>
+          {postData.gallery_data.items.length}
+        </div>
+      );
+    }
+
+    let videoIndicator = null;
+    if (postData.is_video) {
+      videoIndicator = (
+        <div className="videoIndicator">
+          <i class="fa-solid fa-circle-play"></i>
+          {formatDuration(postData.media.reddit_video.duration)}
+        </div>
+      );
+    }
     return (
       <Link
         key={postData.id}
@@ -206,6 +290,8 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
         feed_type={feedType}
       >
         {thumbnail}
+        {galleryIndicator}
+        {videoIndicator}
 
         <div className="FeedDetails">
           <h2 className="FeedTitle">
@@ -214,15 +300,15 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
                 ? postData.title.slice(0, 100) + "..."
                 : postData.title
             ) + (postData.stickied ? " 📌" : "")}
+            {getCommentFlair(postData)}
           </h2>
           <div className="FeedSubreddit">
             {postData.subreddit_name_prefixed}
           </div>
           <div className="FeedAuthor">
             {"by "}
-            {postData.author_flair_text
-              ? `${postData.author} - ${postData.author_flair_text}`
-              : postData.author}
+            {postData.author}
+            {getAuthorFlair(postData)}
           </div>
           <div className="FeedComments">{`${postData.num_comments} comments`}</div>
         </div>

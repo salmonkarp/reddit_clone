@@ -49,8 +49,11 @@
     margin-left: 10px;
     font-size: 12px;
     border-radius: 10px;
+    width: max-content;
     padding-inline: 10px;
-    width: max-content
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .CommentTitle {
@@ -117,14 +120,20 @@
     border-radius: 10px;
     padding-inline: 10px;
     margin-block: 10px;
+    font-weight: 500;
+}
+
+.CommentGallery {
+    height: max-content;
 }
 
 .CommentMediaInside {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
     box-shadow: 5px 0px 30px 2px rgba(151, 151, 151, 0.13) ;
 }
+
 
 .CommentVideo {
     width: 100%;
@@ -132,8 +141,57 @@
     box-shadow: none;
 }
 
+
+
 .CommentMedia:has(.CommentVideo){
     border-radius: 0;
+}
+
+.MediaModal {
+    display: none;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top:0;
+    left:0;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--hover-gray);
+    z-index: 3;
+}
+
+.MediaModal::before {
+    content: '';
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left:0;
+    background: var(--image-url) center center / cover no-repeat;
+    filter: blur(15px);
+    opacity: 0.3;
+}
+
+.MediaModalInside {
+    z-index: 4;
+    height: 100%;
+}
+
+.CloseMediaModalButton {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: var(--hover-gray);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border:none;
+    outline:none;
+    cursor: pointer;
+}
+
+.CloseMediaModalButton:hover {
+    background-color: black;
 }
 
 .CommentOriLink {
@@ -171,6 +229,14 @@
 }
 .CommentVote button .fa-arrow-up {
     margin-left: 5px;
+}
+
+.CommentVote button .upvoted {
+    color: var(--reddit-orange);
+}
+
+.CommentVote button .downvoted {
+    color: var(--downvote-blue);
 }
 
 .CommentAdd {
