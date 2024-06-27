@@ -159,7 +159,8 @@ function Feed({ type }) {
       postData.secure_media &&
       postData.secure_media.reddit_video &&
       postData.thumbnail !== "nsfw" &&
-      postData.preview
+      postData.preview &&
+      !postData.over_18
     ) {
       thumbnail = (
         <img
@@ -168,14 +169,14 @@ function Feed({ type }) {
           className="FeedThumbnail"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "reddit-icon.png";
+            e.target.src = "/reddit-icon.png";
           }}
         />
       );
     } else if (
       postData.thumbnail !== "self" &&
       postData.thumbnail !== "default" &&
-      postData.thumbnail !== "nsfw" &&
+      !postData.over_18 &&
       postData.thumbnail !== "spoiler" &&
       !postData.is_gallery &&
       postData.preview
@@ -187,11 +188,11 @@ function Feed({ type }) {
           className="FeedThumbnail"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "reddit-icon.png";
+            e.target.src = "/reddit-icon.png";
           }}
         />
       );
-    } else if (postData.is_gallery) {
+    } else if (postData.is_gallery && !postData.over_18) {
       thumbnail = (
         <img
           src={thumbnailUrl}
@@ -199,11 +200,11 @@ function Feed({ type }) {
           className="FeedThumbnail"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "reddit-icon.png";
+            e.target.src = "/reddit-icon.png";
           }}
         />
       );
-    } else if (postData.thumbnail === "nsfw") {
+    } else if (postData.over_18) {
       thumbnail = <div className="FeedThumbnail nsfw">NSFW</div>;
     } else if (postData.thumbnail === "spoiler") {
       thumbnail = <div className="FeedThumbnail nsfw">Spoiler</div>;

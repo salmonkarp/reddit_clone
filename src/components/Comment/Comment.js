@@ -7,8 +7,9 @@ import SubredditDetails from "../SubredditDetails/SubredditDetails";
 import timeAgo from "../../scripts/getTimeAgo";
 import "./Comment.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import MarkdownComponent from "../ReactGFM";
+import MarkdownComponent from "../../scripts/ReactGFM";
 import { Carousel } from "react-responsive-carousel";
+import ReplyList from "../../scripts/getCommentTree";
 
 const Comment = () => {
   const { subreddit, postId, postTitle } = useParams();
@@ -47,7 +48,7 @@ const Comment = () => {
         },
       };
     }
-    let url = `https://oauth.reddit.com/r/${subreddit}/comments/${postId}/${postTitle}/.json`;
+    let url = `https://oauth.reddit.com/r/${subreddit}/comments/${postId}/${postTitle}/.json?limit=20`;
     try {
       const response = await fetch(url, options);
       const data = await response.json();
@@ -98,7 +99,9 @@ const Comment = () => {
         <div
           className="CommentAuthorFlair"
           style={{
-            backgroundColor: commentDetails.author_flair_background_color,
+            backgroundColor:
+              commentDetails.author_flair_background_color ||
+              (commentDetails.author_flair_text ? "white" : "none"),
             color:
               commentDetails.author_flair_text_color === "light"
                 ? "white"
@@ -117,12 +120,82 @@ const Comment = () => {
   const getCommentMedia = () => {
     try {
       if (commentDetails.media && commentDetails.media.reddit_video) {
+        const videoUrl = getUrl(commentDetails.media.reddit_video.fallback_url);
+        const audioUrl = getUrl(
+          commentDetails.media.reddit_video.fallback_url.split("DASH")[0] +
+            "DASH_AUDIO_128.mp4"
+        );
+
+        const combineVideoAndAudio = async (
+          videoElement,
+          videoUrl,
+          audioUrl
+        ) => {
+          const mediaSource = new MediaSource();
+          videoElement.src = URL.createObjectURL(mediaSource);
+
+          mediaSource.addEventListener("sourceopen", async () => {
+            const videoSourceBuffer = mediaSource.addSourceBuffer(
+              'video/mp4; codecs="avc1.64001f"'
+            );
+            const audioSourceBuffer = mediaSource.addSourceBuffer(
+              'audio/mp4; codecs="mp4a.40.2"'
+            );
+
+            const videoData = await fetch(videoUrl).then((response) =>
+              response.arrayBuffer()
+            );
+            const audioData = await fetch(audioUrl).then((response) =>
+              response.arrayBuffer()
+            );
+
+            let videoAppended = false;
+            let audioAppended = false;
+
+            const checkEndOfStream = () => {
+              if (
+                videoAppended &&
+                audioAppended &&
+                !videoSourceBuffer.updating &&
+                !audioSourceBuffer.updating
+              ) {
+                mediaSource.endOfStream();
+              }
+            };
+
+            videoSourceBuffer.addEventListener("updateend", () => {
+              videoAppended = true;
+              checkEndOfStream();
+              if (!audioSourceBuffer.updating && !audioAppended) {
+                audioSourceBuffer.appendBuffer(audioData);
+              }
+            });
+
+            audioSourceBuffer.addEventListener("updateend", () => {
+              audioAppended = true;
+              checkEndOfStream();
+            });
+
+            videoSourceBuffer.addEventListener("error", (e) => {
+              console.error("Video SourceBuffer error:", e);
+            });
+
+            audioSourceBuffer.addEventListener("error", (e) => {
+              console.error("Audio SourceBuffer error:", e);
+            });
+
+            videoSourceBuffer.appendBuffer(videoData);
+          });
+        };
+
         return (
           <div className="CommentMedia">
             <video
-              src={commentDetails.media.reddit_video.fallback_url}
+              ref={(videoElement) => {
+                if (videoElement && !videoElement.src)
+                  combineVideoAndAudio(videoElement, videoUrl, audioUrl);
+              }}
               controls
-              alt=""
               className="CommentMediaInside CommentVideo"
             />
           </div>
@@ -236,7 +309,9 @@ const Comment = () => {
         <div
           className="CommentFlair"
           style={{
-            backgroundColor: commentDetails.link_flair_background_color,
+            backgroundColor:
+              commentDetails.link_flair_background_color ||
+              (commentDetails.link_flair_text ? "white" : "none"),
             color:
               commentDetails.link_flair_text_color === "light"
                 ? "white"
@@ -250,14 +325,6 @@ const Comment = () => {
       console.error(error);
       return <div className="CommentFlair"></div>;
     }
-  };
-
-  const getCommentTree = () => {
-    if (!commentTree) {
-      return;
-    }
-
-    return <div className="CommentMainTree"></div>;
   };
 
   const displayMediaModal = () => {
@@ -275,7 +342,7 @@ const Comment = () => {
         .querySelector(".Comment")
         .removeChild(document.querySelector(".MediaModal"));
     } catch {
-      console.log("lol");
+      console.log("lol i'm never gonna fix this");
     }
   };
 
@@ -298,7 +365,7 @@ const Comment = () => {
     document.querySelector(".Comment").appendChild(dynamicModal);
   };
 
-  console.log(commentDetails);
+  console.log(commentTree);
 
   return (
     <div className="Comment">
@@ -318,12 +385,12 @@ const Comment = () => {
               }}
             />
             <div className="UserDetailsHelper">
-              <div className="CommentCommunityName">
+              <Link className="CommentCommunityName" to={`/r/${subreddit}`}>
                 {"r/" +
                   subreddit +
                   " - " +
                   (commentDetails ? timeAgo(commentDetails.created_utc) : "")}
-              </div>
+              </Link>
               <div className="CommentAuthor">
                 <div>{commentDetails ? commentDetails.author : ""}</div>
                 {getAuthorFlair()}
@@ -334,9 +401,6 @@ const Comment = () => {
             {commentDetails ? commentDetails.title : ""}
           </div>
           <div className="CommentDesc">
-            {/* <ReactMarkdown
-              children={commentDetails ? commentDetails.selftext : ""}
-            ></ReactMarkdown> */}
             <MarkdownComponent
               content={commentDetails ? commentDetails.selftext : ""}
             ></MarkdownComponent>
@@ -386,7 +450,10 @@ const Comment = () => {
             placeholder="Add a comment..."
           ></input>
         </div>
-        {getCommentTree()}
+        <ReplyList
+          commentTree={commentTree}
+          postId={commentDetails.id}
+        ></ReplyList>
       </div>
       <SubredditDetails subreddit={subreddit}></SubredditDetails>
     </div>

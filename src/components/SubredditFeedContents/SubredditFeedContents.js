@@ -207,7 +207,8 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
     if (
       postData.secure_media &&
       postData.secure_media.reddit_video &&
-      postData.preview
+      postData.preview &&
+      !postData.over_18
     ) {
       thumbnail = (
         <img
@@ -223,7 +224,7 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
     } else if (
       postData.thumbnail !== "self" &&
       postData.thumbnail !== "default" &&
-      postData.thumbnail !== "nsfw" &&
+      !postData.over_18 &&
       postData.thumbnail !== "spoiler" &&
       !postData.is_gallery &&
       postData.preview
@@ -239,7 +240,7 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
           }}
         />
       );
-    } else if (postData.is_gallery) {
+    } else if (postData.is_gallery && !postData.over_18) {
       thumbnail = (
         <img
           src={thumbnailUrl}
@@ -251,7 +252,7 @@ const SubredditFeedContents = forwardRef(({ feedType, subreddit }, ref) => {
           }}
         />
       );
-    } else if (postData.thumbnail === "nsfw") {
+    } else if (postData.over_18) {
       thumbnail = <div className="FeedThumbnail nsfw">NSFW</div>;
     } else if (postData.thumbnail === "spoiler") {
       thumbnail = <div className="FeedThumbnail nsfw">Spoiler</div>;

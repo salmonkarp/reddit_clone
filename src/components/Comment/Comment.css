@@ -256,3 +256,129 @@
     overflow-x: auto;
     margin-top: 10px;
 }
+
+.CommentMainTree {
+    margin-top: 20px;
+    margin-bottom:100px;
+}
+
+.Reply {
+    height: auto;
+}
+
+.ReplyTop {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+.ReplyMeta {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 5px;
+}
+
+.ReplyAuthorFlair {
+    margin-left:0 !important;
+}
+
+.ReplyAvatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.ReplyBottom {
+    display: flex;
+    flex-direction: row;
+}
+
+.ReplyLeft {
+    width: 50px !important;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.ReplyLine {
+    width: 2px;
+    margin-inline: 24px;
+    background-color: var(--hover-gray);
+    
+}
+
+/* .ReplyLeft:hover .ReplyLine {
+    background-color:white;
+    
+} */
+
+.ReplyLineHori {
+    position: absolute;
+    left:-25px;
+    top: 25px;
+    height: 2px;
+    width: 25px;
+    background-color: var(--hover-gray);
+    
+}
+
+.ReplyContent {
+    margin-bottom: 20px;
+}
+
+.ReplyBottom .Reply{
+    width: 100%;
+    margin-top: 20px;
+    /* margin-left: 50px;   */
+}
+
+.ReplyContent p{
+    font-size: 16px;
+    margin-block: 10px;
+    flex-grow: 1;
+    text-align: distribute;
+    padding-right: 20px;
+}
+
+.ReplyContent * img {
+    max-height: 150px;
+}
+
+.ReplyActions {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    background-color: var(--hover-gray);
+    width: min-content;
+    padding-inline: 10px;
+    padding-block: 5px;
+    border-radius: 10px;
+}
+
+.ReplyActions button {
+    background:none;
+    outline:none;
+    border: none;
+    cursor: pointer;
+}
+
+.ReplyScore {
+    font-size: 16px;
+}
+
+.ReplyBottomMeta {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.ReplyShare {
+    background-color: var(--hover-gray);
+    width: min-content;
+    padding-inline: 10px;
+    padding-block: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
